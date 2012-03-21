@@ -1,0 +1,15 @@
+package esir2.progse.ws.client;
+
+public class Client {
+
+	public static void main ( String args[]){
+
+		JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+		factory.setServiceClass(HelloWebService.class);
+		factory.setAddress("http://localhost:9000/helloWorld");
+		HelloWebService client = (HelloWebService) factory.create();
+		String reply = client.sayHello("HI");
+		System.out.println("Server said: " + reply);
+	}
+
+}

@@ -1,0 +1,10 @@
+package esir2.progse.ws.server;
+
+import javax.jws.WebService;
+
+@WebService( endpointInterface = "esir2.progse.ws.server.HelloWebServiceImpl", serviceName = "HelloWorld")
+public class HelloWebServiceImpl implements HelloWebService {
+	public String sayHello(String name) {
+		return "Hey hey " + name;
+	}
+}

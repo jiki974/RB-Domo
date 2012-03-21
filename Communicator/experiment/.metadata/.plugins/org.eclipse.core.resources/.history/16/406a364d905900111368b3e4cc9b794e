@@ -1,0 +1,79 @@
+package esir2.progse.ws.server;
+
+import javax.xml.ws.Endpoint;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+
+
+public class Activator implements  BundleActivator,Runnable{
+
+	private boolean end=false;
+	private BundleContext context;
+	private Endpoint e;
+
+
+	public static void main (String[]args){
+		System.out.println ("Starting Server");
+		String address = "http://localhost:9000/helloWorld";
+		HelloWebServiceImpl implementor = new HelloWebServiceImpl();
+		Endpoint e = Endpoint.publish(address, implementor);
+		System.out.println("Server Ready");	
+		
+	}
+	@Override
+	public void start(BundleContext arg0) throws Exception {
+		// TODO Auto-generated method stub
+		context = arg0;
+		end = false;
+
+		System.out.println ("Starting Server");
+		String address = "http://localhost:9000/helloWorld";
+		HelloWebServiceImpl implementor = new HelloWebServiceImpl();
+		e = Endpoint.publish(address, implementor);
+		System.out.println("Server Ready");	
+		String reponse=implementor.sayHello("Paul");
+		System.out.println("#Serveur#:"+reponse);
+		
+
+	}
+
+	@Override
+	public void stop(BundleContext arg0) throws Exception {
+		// TODO Auto-generated method stub
+		end = true;
+		e.stop();
+	}
+
+	@Override
+	public void run() {
+
+		// TODO Auto-generated method stub
+		while (!end) {
+
+
+
+			ServiceReference refs[];
+			try {
+				refs = context.getAllServiceReferences(HelloWebService.class.getName(),null);
+				if (refs != null && refs.length != 0) {
+
+					for (ServiceReference servRef : refs) {
+						HelloWebService service = (HelloWebService) context.getService(servRef);
+
+						System.out.println(service.sayHello("paul"));
+					}
+				}	
+		
+				Thread.sleep(5000);				
+			} catch (InterruptedException ie) {
+				ie.printStackTrace();
+			} catch (InvalidSyntaxException ee) {
+				ee.printStackTrace();
+			}
+		}
+	}
+
+}

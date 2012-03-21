@@ -1,0 +1,11 @@
+package esir2.progse.ws.server;
+
+import javax.jws.WebParam;
+import javax.jws.WebService;
+
+@WebService(endpointInterface = "esir2.progse.ws.server.HelloWebService",
+		serviceName = "HelloWorld")
+
+public interface HelloWebService {
+String sayHello( @WebParam(name="name") String name );
+}

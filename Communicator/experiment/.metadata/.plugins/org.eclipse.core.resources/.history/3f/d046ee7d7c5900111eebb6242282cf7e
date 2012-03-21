@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Activator: esir2.progse.ws.client.MainActivator
+Bundle-Name: HelloClient
+Bundle-SymbolicName: HelloClient
+Bundle-Version: 1.0.0.qualifier
+Import-Package: esir2.osgi.tp.hello, org.osgi.framework, org.apache.cxf.jaxws , javax.xml.ws, javax.jws               
+Export-Package: esir2.progse.ws.client
+Bundle-ClassPath: .

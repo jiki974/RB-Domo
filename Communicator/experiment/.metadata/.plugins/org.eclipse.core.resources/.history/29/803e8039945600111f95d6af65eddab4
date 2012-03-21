@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-Activator: activ.main
+Bundle-ManifestVersion: 2
+Bundle-Name: acc
+Bundle-SymbolicName: acc
+Import-Package: esir2.osgi.tp.hello,
+ org.osgi,
+ org.osgi.framework
+Export-Package: activ
+Bundle-Version: 1.0.0.qualifier  
+Bundle-ClassPath: . 

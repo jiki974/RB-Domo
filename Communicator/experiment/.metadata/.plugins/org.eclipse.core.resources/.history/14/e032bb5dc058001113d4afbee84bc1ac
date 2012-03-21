@@ -1,0 +1,5 @@
+package esir2.osgi.helloServer;
+
+public class HelloWebServiceImpl {
+
+}

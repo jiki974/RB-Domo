@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Activator: esir2.progse.ws.server.Activator
+Bundle-Name: HelloServer
+Bundle-SymbolicName: HelloServer
+Bundle-Version: 1.0.0.qualifier
+Import-Package: esir2.progse.ws.server , org.osgi.framework ,javax.xml.ws 
+Bundle-ClassPath: . 
+Export-Package: esir2.progse.ws.server 
