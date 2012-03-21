@@ -89,7 +89,7 @@ public class Processor implements BundleActivator {
 	}
 
 	
-	/** Fonction permettant la deconnexion à une addresse
+	/** Fonction permettant la déconnexion à une addresse
 	 * 
 	 * @param add-addresse Ip ex :192.168.1.155
 	 * 
