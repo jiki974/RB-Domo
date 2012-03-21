@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Processor
+Bundle-SymbolicName: Processor
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Export-Package: esir2.rb.projet.processor,esir2.rb.projet.threads,esir2.rb.projet.objets 
+Bundle-Activator: esir2.rb.projet.processor.Processor
+Import-Package: esir2.rb.projet.communicator,
+ org.osgi.framework
