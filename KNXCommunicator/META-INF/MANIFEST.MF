@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: KNXCommunicator
+Bundle-SymbolicName: KNXCommunicator
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .,
+ Lib/calimero-2.0a4.jar
+Export-Package: esir2.rb.projet.knxcommunicator
+Bundle-Activator: esir2.rb.projet.knxcommunicator.KnxCommunicator
+Import-Package: esir2.rb.projet.communicator,esir2.rb.projet.processor,
+ org.osgi.framework
