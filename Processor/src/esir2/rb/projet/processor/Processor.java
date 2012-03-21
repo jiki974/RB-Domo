@@ -74,7 +74,7 @@ public class Processor implements BundleActivator {
 				
 				if(communicator.openConnection(add))// Si la l'ouverture de connexion est réussie à l'adresse indiquée
 				{
-					/** Rajout de la connection dans Connections **/
+					/** Rajout de la connexion dans Connections **/
 					
 					connections.put(add,communicator);
 					
