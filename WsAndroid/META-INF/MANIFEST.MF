@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Activator: esir2.rb.projet.wsandroid.WsAndroidActivator
+Bundle-Name: WsAndroid
+Bundle-SymbolicName: WsAndroid
+Bundle-Version: 1.0.0.qualifier
+Import-Package:  org.osgi.framework , javax.jws, javax.xml.ws, esir2.rb.projet.processor
+Export-Package: esir2.rb.projet.wsandroid
+Bundle-ClassPath: .
+

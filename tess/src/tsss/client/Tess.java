@@ -67,7 +67,7 @@ public class Tess implements EntryPoint {
 		final Label textToServerLabel = new Label();
 		final HTML serverResponseLabel = new HTML();
 		VerticalPanel dialogVPanel = new VerticalPanel();
-		dialogVPanel.addStyleName("dialogVPanel");
+		dialogVPanel.addStyleName("dialogVPanelui");
 		dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
 		dialogVPanel.add(textToServerLabel);
 		dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
