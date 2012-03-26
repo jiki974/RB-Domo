@@ -50,9 +50,9 @@ public class KnxCommunicator  implements Communicator,BundleActivator{
 		dict.put("type", "KNX");
 		sr = bc.registerService(Communicator.class.getName(), this, dict);	
 		System.out.println("Knx Communicator is available !");
-		CatchProcessor cProc=new CatchProcessor(bc);
-		Thread t=new Thread(cProc);
-		t.start();
+		//CatchProcessor cProc=new CatchProcessor(bc);
+		//Thread t=new Thread(cProc);
+		//t.start();
 	}
 
 
@@ -70,9 +70,9 @@ public class KnxCommunicator  implements Communicator,BundleActivator{
 		
 		if(netLinkIp.isOpen()) {
 			connected=true;
-			process=cProc.getProcessor();
-			bl=new ButtonListener(process);// Déclaration du processus de recherche de Communicator
-			netLinkIp.addLinkListener(bl);
+			//process=cProc.getProcessor();
+			//bl=new ButtonListener(process);// Déclaration du processus de recherche de Communicator
+			//netLinkIp.addLinkListener(bl);
 		}
 		try {
 			pc = new ProcessCommunicatorImpl(netLinkIp);
