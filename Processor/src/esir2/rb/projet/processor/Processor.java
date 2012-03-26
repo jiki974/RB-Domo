@@ -155,9 +155,9 @@ public class Processor implements BundleActivator {
 
 			/** Lancement de la sequence **/
 			sequences.put(add,seq);
-			//sequenceThread =new Thread(seq) ;
-			//sequenceThread.start();	
-			seq.run();
+			sequenceThread =new Thread(seq) ;
+			sequenceThread.start();	
+			//seq.run();
 			/**Ajout de la sequence **/
 
 			
