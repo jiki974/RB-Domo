@@ -9,22 +9,25 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 import esir2.rb.projet.communicator.Communicator;
+import esir2.rb.projet.threads.Handler;
 import esir2.rb.projet.threads.SearchCommunicators;
 import esir2.rb.projet.threads.Sequence;
+import esir2.rb.projet.util.Util;
 
 
-public class Processor implements BundleActivator {
+public class Processor implements BundleActivator,Runnable {
 
 
 
-	private Thread searchCommunicatorsThread;
-	private Thread sequenceThread;
+	private Thread searchCommunicatorsThread,sequenceThread,handlerThread;
+	
 	private SearchCommunicators sc;
 	private ServiceRegistration sr;
-
+	private Handler handler;
 	private HashMap<String,Communicator> connections=new HashMap<String, Communicator>();
 	private HashMap<String,Sequence> sequences=new HashMap<String ,Sequence>();
-	//private HashMap<String,Thread> threads=new HashMap<String ,Thread>();
+	private HashMap<String,Handler> handlers=new HashMap<String, Handler>();
+	private HashMap<String,Thread> threads=new HashMap<String ,Thread>();
 
 
 	public void start(BundleContext bc) throws Exception {
@@ -47,6 +50,7 @@ public class Processor implements BundleActivator {
 	public void stop(BundleContext bc) throws Exception {
 		sc.killThread();
 		sr.unregister();
+		handler.killThread();
 	}
 
 
@@ -71,16 +75,43 @@ public class Processor implements BundleActivator {
 				/** Récupération du communicator correspondant à la techno voulue **/
 				
 				Communicator communicator=sc.getCommunicator(techno);
-				
+				//System.out.println("connexion of communicator "+communicator.toString());
 				if(communicator.openConnection(add))// Si la l'ouverture de connexion est réussie à l'adresse indiquée
 				{
 					/** Rajout de la connexion dans Connections **/
 					
 					connections.put(add,communicator);
 					
+					if(!handlers.containsKey(add)){
+					
+					handler=new Handler(add,communicator,this);
+					
+					System.out.println("creation of handler : "+handler.toString());
+					
+					handlers.put(add,handler);
+					
+					handler.addActionToBePerformed("0/2/0",Util.PAUSE);
+					handler.addActionToBePerformed("0/2/1",Util.RESUME);
+					
+					/** Test **/
+					
+					Thread[] threads = new Thread[Thread.activeCount()];
+					int nbthread=Thread.enumerate(threads);
+					System.out.println("nbThread = "+nbthread);
+					handler.startThread();
+					
+					}
+				
+	
+                    /*handlerThread=new Thread(handler);
+                    /*handlerThread.start();
+                     * 
+                     */
+				
 					System.out.println("nb of connections = "+connections.size());
 				}
 
+				
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}	
@@ -102,14 +133,29 @@ public class Processor implements BundleActivator {
 			/** Récupération du communicator correspondant **/
 			
 			Communicator communicator=connections.get(add);
-			
+			System.out.println("disconnexion of communicator "+communicator.toString());
 			/**  Arrêt de la séquence **/
 			stopSequence(add);
 			
 			/** Fermeture de la connexion **/
+		   try {
+			Thread.sleep(500);
+		   } catch (InterruptedException e) {
+			   System.out.println(e.getMessage());
+		   }
+		   communicator.removeListener(add,"0/2/0");
+		   communicator.removeListener(add,"0/2/1");
+		   if(handlers.containsKey(add)){
+			   Handler h=  handlers.get(add);
+			   h.killThread();
+			   System.out.println("kill handler : "+h.toString());
+			   handlers.remove(add);
+		 
+		   }
+		 
+		   communicator.closeConnection(add);
 			
-			communicator.closeConnection();
-			
+		   
 			/** Retrait de la connection dans Connections **/
 			
 			connections.remove(add);
@@ -150,7 +196,7 @@ public class Processor implements BundleActivator {
 			Communicator communicator=connections.get(add);
 
 			/** Création de la sequence **/
-			Sequence seq=new Sequence(communicator,s);
+			Sequence seq=new Sequence(add,communicator,s);
 
 
 			/** Lancement de la sequence **/
@@ -245,5 +291,42 @@ public class Processor implements BundleActivator {
 		return false; 
 
 	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void writeOn(String ipadd,int lampe){
+		if(connections.containsKey(ipadd)){
+			try {
+				connections.get(ipadd).writeOn(ipadd,lampe);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	public void writeOff(String ipadd,int lampe){
+		if(connections.containsKey(ipadd)){
+			try {
+				connections.get(ipadd).writeOff(ipadd,lampe);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	public String getState(String ip, String addgp){
+		Handler handler=handlers.get(ip);
+		return handler.getState(addgp);
+	}
+	
+
 
 }

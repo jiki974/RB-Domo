@@ -72,8 +72,7 @@ public class SearchCommunicators implements Runnable {
 		com=bacnetCom;
 		break;
 			
-		
-
+	
 		default:
 		break;
 		}

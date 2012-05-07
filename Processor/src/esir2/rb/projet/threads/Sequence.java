@@ -13,11 +13,12 @@ public class Sequence implements Runnable {
 	private Communicator comm;
 	private String sequence;
 	private int speed=800;
-
+	private String add;
 	private volatile Thread seqThread;
 	private boolean threadSuspended=false;
 
-	public Sequence(Communicator c,String seq){
+	public Sequence(String a,Communicator c,String seq){
+		add=a;
 		comm=c;
 		sequence=seq;
 		makeSequence(seq);
@@ -36,10 +37,10 @@ public class Sequence implements Runnable {
 				try {
 
 					if(launched){
-						comm.writeOn(seq.get(i));
-						comm.writeOn(seq.getNext(i));
-						comm.writeOff(seq.getPrevious(i));}
-					thisThread.sleep(speed);
+						comm.writeOn(add,seq.get(i));
+						comm.writeOn(add,seq.getNext(i));
+						comm.writeOff(add,seq.getPrevious(i));}
+						thisThread.sleep(speed);
 
 					synchronized(this) {
 						while (threadSuspended && seqThread==thisThread)
@@ -75,7 +76,7 @@ public class Sequence implements Runnable {
 
 	public void allOff(){
 		try{
-			comm.allOff();
+			comm.allOff(add);
 		}
 		catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());

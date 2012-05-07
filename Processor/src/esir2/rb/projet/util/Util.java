@@ -12,13 +12,26 @@ public class Util {
 	
 	public final static String ADDRESS_PLATFORM="http://localhost"; // Addresse de la plateforme simulé
 	public final static int PORT=9000; 
-	public final static int REFRESH_THREAD_SEARCH_COMMUNICATORS=5000;
-	public final static int REFRESH_THREAD_SEQUENCE=800;
+	
+	/** Refreshs **/
+	
+	public final static int REFRESH_THREAD_SEARCH_COMMUNICATORS=500;
+	public final static int REFRESH_THREAD_SEQUENCE=500;
+	
+	/** Techno **/ 
 	
 	public final static int SIMU=0;
 	public final static int KNX=1;
 	public final static int BACNET=2;
 
+	/** Actions **/
+	
+	public final static int STOP=0;
+	public final static int PLAY=1;
+	public final static int PAUSE=2;
+	public final static int RESUME=3;
+	
+	
 	
 	/** Fonction retournant l'addresse où le webservice ws sera accessible **/
 	
