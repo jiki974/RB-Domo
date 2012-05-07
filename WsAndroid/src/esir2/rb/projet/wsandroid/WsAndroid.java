@@ -17,6 +17,7 @@ public interface WsAndroid {
 	void pauseSequence(@WebParam(name="add") String add );// met en pause une séquence
 	void stopSequence(@WebParam(name="add") String add );// arrete une séquence;
 	boolean isConnected(@WebParam(name="add") String add );// indique si 'lon est connecté à la techno 
+	String getState(@WebParam(name="add") String add,@WebParam(name="addgp") String addgp);
 	String getConnections();
 	String getSequences();
 

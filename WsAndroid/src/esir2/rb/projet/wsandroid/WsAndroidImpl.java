@@ -65,6 +65,11 @@ public class WsAndroidImpl implements WsAndroid {
 			
 			return proc.getSequenceSpeed(add);
 		}
+		@Override
+		public String getState(String add, String addgp) {
+			// TODO Auto-generated method stub
+			return proc.getState(add, addgp);
+		}
 
 
 
