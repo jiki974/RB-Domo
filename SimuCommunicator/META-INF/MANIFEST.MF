@@ -5,5 +5,7 @@ Bundle-Name: SimuCommunicator
 Bundle-SymbolicName: SimuCommunicator
 Bundle-Version: 1.0.0
 Export-Package: esir2.rb.projet.simucommunicator
-Import-Package: org.osgi.framework;esir2.rb.projet.communicator
-Bundle-ClassPath: . 
+Import-Package: esir2.rb.projet.communicator,
+ javax.swing,
+ org.osgi.framework
+Bundle-ClassPath: .
