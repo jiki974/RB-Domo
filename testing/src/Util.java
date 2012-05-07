@@ -70,7 +70,6 @@ public class Util {
 			e.printStackTrace();
 			
 		}	
-		System.out.println("add: "+ret);
 		//ret="http://192.16.1.5";
 		return ret;
 	}

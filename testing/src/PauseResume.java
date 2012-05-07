@@ -25,7 +25,7 @@ public class PauseResume implements ActionListener{
 			cheni.stopThreadSetup();
 
 		}
-		if (chen.getInvalidTechnoState()&&chen.getChenState()){
+		if (chen.getInvalidTechnoState()){
 			String addCible=chen.getChosenAdd();
 			if(cheni.isConnected(addCible)){
 				boolean isPaused=chen.isPaused();

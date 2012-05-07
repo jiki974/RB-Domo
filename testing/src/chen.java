@@ -35,6 +35,13 @@ public class chen extends javax.swing.JFrame {
 	private Thread technoThread,retourEtatThread,setupThread,retourKnxThread;
 	private Thread killStopThread,killPauseThread,killResumeThread;
 
+	private Soapcommunicator sm;	
+	private String webservice="wsandroid";
+	private String namespace="http://wsandroid.projet.rb.esir2/";
+	private String address=Util.getLocalAdd();	
+
+	
+
 	/** Creates new form chen */
 	public chen() throws IOException {
 		// boolean end=false;
@@ -59,13 +66,15 @@ public class chen extends javax.swing.JFrame {
 		lampe3.addActionListener(new Number3());
 		lampe4.addActionListener(new Number4());
 
-		retourKnxThread= new Thread(new retourKnx());
-		retourKnxThread.start();
+		//*retourKnxThread= new Thread(new retourKnx());
+		//retourKnxThread.start();
+		
+		
 		chenillardThread= new Thread(new chenillard());
 		//technoThread= new Thread(new technoThread());
 		//technoThread.start();
-		retourEtatThread= new Thread(new retourEtat());
-		retourEtatThread.start();
+		//retourEtatThread= new Thread(new retourEtat());
+		//retourEtatThread.start();
 		killStopThread=new Thread(new killStop());
 		killPauseThread=new Thread(new killPause());
 		killResumeThread=new Thread(new killResume());
@@ -206,10 +215,7 @@ public class chen extends javax.swing.JFrame {
 
 	}
 	public class killPause implements Runnable{
-		private Soapcommunicator sm;	
-		private String webservice="wsandroid";
-		private String namespace="http://wsandroid.projet.rb.esir2/";
-		private String address="http://192.168.1.106";
+
 		@Override
 		public void run() {
 
@@ -590,10 +596,10 @@ public class chen extends javax.swing.JFrame {
 				techno=getChosenTechno();// Simu
 				
 			
-					if(techno.equals("SIMU")) stopRetourKnxThread();//j'arrete la thread d'affichage des retours
+					if(techno.equals("SIMU")  && isConnectedToTech(add,"KNX")) stopRetourKnxThread();//j'arrete la thread d'affichage des retours
 						
 				
-					else if (techno.equals("KNX")) {					
+					else if (techno.equals("KNX") && isConnectedToTech(add,"SIMU") ) {					
 							stopThread();//j'arrète l'affichage du chenillard mode simu
 							startRetourKnxThread();
 						}
@@ -1180,63 +1186,40 @@ public class chen extends javax.swing.JFrame {
 	}
 
 	public boolean isConnected(String add){
-
-		int i = 1;
-		Soapcommunicator sm;
-		String webservice = "wsandroid";
-		String namespace = "http://wsandroid.projet.rb.esir2/";
-		String address = "";
 		boolean response = false;
-
-		address=Util.getLocalAdd();	
-
-
+		
 		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
-		sm.setMethod(webservice,"isConnected","add",add);	
-		String respons=sm.getResponse().toString();
+		sm.setMethod(webservice,"isConnected","add",add);
+		
+		String rep=sm.getResponse().toString();
 
-		if (respons.equals("true"))response=true;
+		if (rep.equals("true")) response=true;
 
-		try {			sm.post();
+		try {			
+			sm.post();
 
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e){
+			System.out.println(e.getMessage());
 		}
 
 		return response;
-
 	}
+	
 	public boolean readState(String add,String addgp){
 
-		int i = 1;
-		Soapcommunicator sm;
-		String webservice = "wsandroid";
-		String namespace = "http://wsandroid.projet.rb.esir2/";
-		String address = "";
 		boolean response = false;
-
-		address=Util.getLocalAdd();	
-
-
 		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
-		sm.setMethod(webservice,"getState","add",add,"addgp",addgp);		
-		String respons=sm.getResponse().toString();
+		sm.setMethod(webservice,"getState","add",add,"addgp",addgp);
+		
+		String rep=sm.getResponse().toString();
 
-		if (respons.equals("1"))response=true;
+		if (rep.equals("1"))response=true;
 
 		try {	sm.post();
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e){
+			System.out.println(e.getMessage());
 		}
 
 		return response;
@@ -1245,10 +1228,6 @@ public class chen extends javax.swing.JFrame {
 
 	public void ledOn(int nbLamp){
 
-		Soapcommunicator sm;	
-		String webservice="wsandroid";
-		String namespace="http://wsandroid.projet.rb.esir2/";
-		String address="";
 		String numLamp="";
 
 		switch (nbLamp){
@@ -1259,7 +1238,7 @@ public class chen extends javax.swing.JFrame {
 		default: break;
 		}
 
-		address=Util.getLocalAdd();	
+		
 		String addCible=chen.getChosenAdd();
 		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 		sm.setMethod(webservice,"writeOn","add",addCible,"lampe",numLamp);
@@ -1267,23 +1246,16 @@ public class chen extends javax.swing.JFrame {
 		try {
 
 			sm.post();
-			System.out.println("post envoyé");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		} catch (Exception e){
+			System.out.println(e.getMessage());
 		}
 
 	}	
 
 	public void ledOff(int nbLamp){
 
-		Soapcommunicator sm;	
-		String webservice="wsandroid";
-		String namespace="http://wsandroid.projet.rb.esir2/";
-		String address="";
+		
 		String numLamp="";
 
 		switch (nbLamp){
@@ -1294,8 +1266,8 @@ public class chen extends javax.swing.JFrame {
 		default: break;
 		}
 
-		address=Util.getLocalAdd();	
 		String addCible=chen.getChosenAdd();
+		System.out.println("add cible :"+addCible);
 		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 		sm.setMethod(webservice,"writeOff","add",addCible,"lampe",numLamp);
 
@@ -1303,12 +1275,8 @@ public class chen extends javax.swing.JFrame {
 
 			sm.post();
 			System.out.println("post envoyé");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e){
+			System.out.println(e.getMessage());
 		}
 
 	}	
@@ -1375,12 +1343,6 @@ public class chen extends javax.swing.JFrame {
 	
 
 	public void resumeSequence(){
-
-		Soapcommunicator sm;	
-		String webservice="wsandroid";
-		String namespace="http://wsandroid.projet.rb.esir2/";
-		String address="";
-		address=Util.getLocalAdd();	
 
 		chen.setPaused(false);
 		String addCible=chen.getChosenAdd();
