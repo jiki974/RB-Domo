@@ -117,8 +117,10 @@ public class SimuCommunicator implements Communicator, BundleActivator {
 
 	@Override
 	public String getValue(String ipadd, String gpadd) {
-		
-		return null;
+		String res="";
+		if(connections.containsKey(ipadd)) res=connections.get(ipadd).getValue(gpadd);
+		return res;
+
 	}
 
 
