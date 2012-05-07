@@ -70,6 +70,13 @@ public class WsAndroidImpl implements WsAndroid {
 			// TODO Auto-generated method stub
 			return proc.getState(add, addgp);
 		}
+		public void writeOn(String add,int lampe) {
+	    proc.writeOn(add, lampe);
+		}
+	
+		public void writeOff(String add,int lampe) {
+			proc.writeOff(add, lampe);
+		}
 
 
 
