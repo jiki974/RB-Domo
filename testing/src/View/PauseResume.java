@@ -1,8 +1,12 @@
+package View;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import org.xmlpull.v1.XmlPullParserException;
+
+import Util.Soapcommunicator;
+import Util.Util;
 
 
 public class PauseResume implements ActionListener{
@@ -11,30 +15,30 @@ public class PauseResume implements ActionListener{
 	private String webservice="wsandroid";
 	private String namespace="http://wsandroid.projet.rb.esir2/";
 	private String address="http://192.168.1.106";
-	private chen cheni;
+	private IHM cheni;
 
-	public PauseResume(chen c){
+	public PauseResume(IHM c){
 		cheni=c;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		//éteinds la séquence setup si elle est en cours et réinitialise le button setup
-		if(chen.getSeqSetState()==true){
-			chen.setSeqIsSet(false);
+		if(IHM.getSeqSetState()==true){
+			IHM.setSeqIsSet(false);
 			cheni.stopThreadSetup();
 
 		}
-		if (chen.getInvalidTechnoState()){
-			String addCible=chen.getChosenAdd();
+		if (IHM.getInvalidTechnoState()){
+			String addCible=IHM.getChosenAdd();
 			if(cheni.isConnected(addCible)){
-				boolean isPaused=chen.isPaused();
+				boolean isPaused=IHM.isPaused();
 				if(isPaused==false){
 					cheni.pauseThread();
-					chen.setPaused(true);
+					IHM.setPaused(true);
 
 					address=Util.getLocalAdd();	
-					addCible=chen.getChosenAdd();
+					addCible=IHM.getChosenAdd();
 					sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 					sm.setMethod(webservice,"pauseSequence","add",addCible);
 
@@ -54,8 +58,8 @@ public class PauseResume implements ActionListener{
 				else{			
 
 					cheni.resumeThread();
-					chen.setPaused(false);
-					addCible=chen.getChosenAdd();
+					IHM.setPaused(false);
+					addCible=IHM.getChosenAdd();
 					sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 					sm.setMethod(webservice,"resumeSequence","add",addCible);
 

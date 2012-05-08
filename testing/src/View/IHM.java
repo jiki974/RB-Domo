@@ -1,17 +1,18 @@
-import java.awt.Color;
+package View;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jws.WebParam;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import org.ksoap2.serialization.SoapPrimitive;
 import org.xmlpull.v1.XmlPullParserException;
+
+import Listeners.LampesListener;
+import Util.Soapcommunicator;
+import Util.Util;
 
 
 
@@ -29,7 +30,21 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author taekeso-kensei
  */
-public class chen extends javax.swing.JFrame {
+public class IHM extends javax.swing.JFrame {
+
+	public  static javax.swing.JCheckBox lampe1;
+	public  static javax.swing.JCheckBox lampe2;
+	public  static javax.swing.JCheckBox lampe3;
+	public  static javax.swing.JCheckBox lampe4;
+	
+	
+	public static javax.swing.JButton bStop;
+	public static  javax.swing.JButton bStart;
+	public static javax.swing.JButton bSetup;
+	public static javax.swing.JButton bDisconnect;
+	public static javax.swing.JButton bPauseResume;
+	public static  javax.swing.JButton bConnect;
+
 
 	private Thread chenillardThread;
 	private Thread technoThread,retourEtatThread,setupThread,retourKnxThread;
@@ -43,33 +58,53 @@ public class chen extends javax.swing.JFrame {
 	
 
 	/** Creates new form chen */
-	public chen() throws IOException {
+	public IHM() throws IOException {
 		// boolean end=false;
+		
+		/** initialisation des composants **/
+		
 		initComponents();
 
-		bStop.addActionListener(new StopSequence(this));
-		bStart.addActionListener(new StartSequence(this));
+		
+		/** Affectation des listeners sur les boutons **/
+		
+		ButtonsListener bListener=new ButtonsListener(this);
+		
+		bStop.addActionListener(bListener);
+		bStart.addActionListener(bListener);
 		bSetup.addActionListener(new GetSequence(this));
-		bConnect.addActionListener(new Connect(this));
-		bDisconnect.addActionListener(new Disconnect(this));
-
+		bConnect.addActionListener(bListener);
+		bDisconnect.addActionListener(bListener);
+		bPauseResume.addActionListener(bListener);
+		
+		
+		/** Affectation des icons au boutons **/
+		
 		bStart.setIcon(iconButtonAdd);
 		bPauseResume.setIcon(iconButtonStart);
 		bStop.setIcon(iconButtonStop);
 		bSetup.setIcon(iconButtonSetup);
-		bPauseResume.addActionListener(new PauseResume(this));
+		
+		
+		/** Affectation des listeners sur les lampes **/
+		
+		LampesListener lListener=new LampesListener();
+		lampe1.addActionListener(lListener);
+		lampe2.addActionListener(lListener);
+		lampe3.addActionListener(lListener);
+		lampe4.addActionListener(lListener);
+		
+		
+
+		
 
 		jSlider1.addChangeListener(new SliderListener(this));
 
-		lampe1.addActionListener(new Number1());
-		lampe2.addActionListener(new Number2());
-		lampe3.addActionListener(new Number3());
-		lampe4.addActionListener(new Number4());
+		
+	
 
-		//*retourKnxThread= new Thread(new retourKnx());
-		//retourKnxThread.start();
-		
-		
+		retourKnxThread= new Thread(new retourKnx());
+
 		chenillardThread= new Thread(new chenillard());
 		//technoThread= new Thread(new technoThread());
 		//technoThread.start();
@@ -82,6 +117,11 @@ public class chen extends javax.swing.JFrame {
 
 	}
 
+	
+	
+	
+	
+	
 	public void allume1() {
 		lampe1.setIcon(iconLedOn);
 		lampe2.setIcon(iconLedOff);
@@ -161,7 +201,7 @@ public class chen extends javax.swing.JFrame {
 			System.out.println("hello from killThread");
 
 			address=Util.getLocalAdd();	
-			String addCible=chen.getChosenAdd();
+			String addCible=IHM.getChosenAdd();
 			sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 			sm.setMethod(webservice,"stopSequence","add",addCible);
 
@@ -193,7 +233,7 @@ public class chen extends javax.swing.JFrame {
 			System.out.println("hello from killThread");
 
 			address=Util.getLocalAdd();	
-			String addCible=chen.getChosenAdd();
+			String addCible=IHM.getChosenAdd();
 			sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 			sm.setMethod(webservice,"resumeSequence","add",addCible);
 
@@ -222,7 +262,7 @@ public class chen extends javax.swing.JFrame {
 			System.out.println("hello from killpauseThread");
 
 			address=Util.getLocalAdd();	
-			String addCible=chen.getChosenAdd();
+			String addCible=IHM.getChosenAdd();
 			sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 			sm.setMethod(webservice,"pauseSequence","add",addCible);
 
@@ -244,50 +284,15 @@ public class chen extends javax.swing.JFrame {
 
 	}
 	//thread qui affiche les retours d'états venant de knx
-	public class retourKnx implements Runnable {
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			String add=chen.getChosenAdd();	
-			System.out.println("hello from retour knx");
-
-
-			while (true){
-
-				boolean ListenerLamp1=readState(add,"0/3/0");
-				boolean ListenerLamp2=readState(add,"0/3/1");
-				boolean ListenerLamp3=readState(add,"0/3/2");
-				boolean ListenerLamp4=readState(add,"0/3/3");
-
-				offAll();
-
-				if(ListenerLamp1)allumeOnly1();
-				if(ListenerLamp2)allumeOnly2();
-				if(ListenerLamp3)allumeOnly3();
-				if(ListenerLamp4)allumeOnly4();
-				System.out.println("youhouuuu");
-				try {
-					Thread.sleep(500); 
-					System.out.println("youhou");
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-
-		}
-
-	}
+	
 	//thread qui gère le basculement entre affichage simu ou knx
 	public class technoThread implements Runnable {
 
 		public void run() {
-			String add=chen.getChosenAdd();
+			String add=IHM.getChosenAdd();
 			while(true){
 				techno=getChosenTechno();
-				add=chen.getChosenAdd();
+				add=IHM.getChosenAdd();
 				System.out.println("hello from technoThread");
 				if(isConnectedToTech(add, techno)&&techno.equals("SIMU"))
 				{
@@ -316,14 +321,14 @@ public class chen extends javax.swing.JFrame {
 
 		public void run() {
 			// TODO Auto-generated method stub
-			String currentTech=chen.getChosenTechno();
+			String currentTech=IHM.getChosenTechno();
 			boolean end=false;
 			while (true){
 
 				while (!end){
 
-					String add=chen.getChosenAdd();
-					String tech=chen.getChosenTechno();
+					String add=IHM.getChosenAdd();
+					String tech=IHM.getChosenTechno();
 					System.out.println("hello from retour etat");
 					boolean state=isConnected(add);
 					if (state){
@@ -592,14 +597,16 @@ public class chen extends javax.swing.JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 				//exemple
-				String add=chen.getChosenAdd();// 192.168.1.5
+				String add=IHM.getChosenAdd();// 192.168.1.5
 				techno=getChosenTechno();// Simu
 				
+				System.out.println(techno);
 			
 					if(techno.equals("SIMU")  && isConnectedToTech(add,"KNX")) stopRetourKnxThread();//j'arrete la thread d'affichage des retours
 						
 				
-					else if (techno.equals("KNX") && isConnectedToTech(add,"SIMU") ) {					
+					else if (techno.equals("KNX") && isConnectedToTech(add,"SIMU") ) {	
+						
 							stopThread();//j'arrète l'affichage du chenillard mode simu
 							startRetourKnxThread();
 						}
@@ -874,7 +881,7 @@ public class chen extends javax.swing.JFrame {
 	 *            the command line arguments
 	 */
 	protected static ImageIcon createImageIcon(String path, String description) {
-		java.net.URL imgURL = chen.class.getResource(path);
+		java.net.URL imgURL = IHM.class.getResource(path);
 		System.out.println(imgURL);
 		if (imgURL != null) {
 			return new ImageIcon(imgURL, description);
@@ -904,16 +911,16 @@ public class chen extends javax.swing.JFrame {
 				}
 			}
 		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(chen.class.getName()).log(
+			java.util.logging.Logger.getLogger(IHM.class.getName()).log(
 					java.util.logging.Level.SEVERE, null, ex);
 		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(chen.class.getName()).log(
+			java.util.logging.Logger.getLogger(IHM.class.getName()).log(
 					java.util.logging.Level.SEVERE, null, ex);
 		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(chen.class.getName()).log(
+			java.util.logging.Logger.getLogger(IHM.class.getName()).log(
 					java.util.logging.Level.SEVERE, null, ex);
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(chen.class.getName()).log(
+			java.util.logging.Logger.getLogger(IHM.class.getName()).log(
 					java.util.logging.Level.SEVERE, null, ex);
 		}
 		// </editor-fold>
@@ -923,10 +930,10 @@ public class chen extends javax.swing.JFrame {
 
 			public void run() {
 				try {
-					new chen().setVisible(true);
+					new IHM().setVisible(true);
 
 				} catch (IOException ex) {
-					Logger.getLogger(chen.class.getName()).log(Level.SEVERE,
+					Logger.getLogger(IHM.class.getName()).log(Level.SEVERE,
 							null, ex);
 				}
 
@@ -935,18 +942,7 @@ public class chen extends javax.swing.JFrame {
 	}
 
 	// Variables declaration - do not modify
-	private javax.swing.JButton bStop;
-	private javax.swing.JButton bStart;
-	private javax.swing.JButton bSetup;
-	private javax.swing.JButton bDisconnect;
-	private javax.swing.JButton bPauseResume;
-	private javax.swing.JButton bConnect;
-
-	private static javax.swing.JCheckBox lampe1;
-	private static javax.swing.JCheckBox lampe2;
-	private static javax.swing.JCheckBox lampe3;
-	private static javax.swing.JCheckBox lampe4;
-
+	
 	private static javax.swing.JTextField champIp;
 
 	private static javax.swing.JComboBox voletDeroulant;
@@ -959,19 +955,19 @@ public class chen extends javax.swing.JFrame {
 
 	private javax.swing.JSeparator jSeparator1;
 
-	private static ImageIcon iconLedOn = createImageIcon("images/bulb_yellow.png",
+	private static ImageIcon iconLedOn = createImageIcon("/images/bulb_yellow.png",
 			"a pretty but meaningless splat");
 	private static ImageIcon iconLedOff = createImageIcon(
-			"images/bulb.png", "a pretty but meaningless splat");
-	private static ImageIcon iconButtonAdd = createImageIcon("images/1336313687_Add.png",
+			"/images/bulb.png", "a pretty but meaningless splat");
+	private static ImageIcon iconButtonAdd = createImageIcon("/images/1336313687_Add.png",
 			"a pretty but meaningless splat");
-	private static ImageIcon iconButtonStart = createImageIcon("images/1336313734_Play.png",
+	private static ImageIcon iconButtonStart = createImageIcon("/images/1336313734_Play.png",
 			"a pretty but meaningless splat");
-	private static ImageIcon iconButtonPause = createImageIcon("images/1336313782_Pause.png",
+	private static ImageIcon iconButtonPause = createImageIcon("/images/1336313782_Pause.png",
 			"a pretty but meaningless splat");
-	private static ImageIcon iconButtonStop = createImageIcon("images/1336313761_Stop.png",
+	private static ImageIcon iconButtonStop = createImageIcon("/images/1336313761_Stop.png",
 			"a pretty but meaningless splat");
-	private static ImageIcon iconButtonSetup = createImageIcon("images/1336314879_RecordPressed.png",
+	private static ImageIcon iconButtonSetup = createImageIcon("/images/1336314879_RecordPressed.png",
 			"a pretty but meaningless splat");
 
 	private static boolean end = true;
@@ -1137,9 +1133,9 @@ public class chen extends javax.swing.JFrame {
 	public void stopThread(){
 		bPauseResume.setIcon(iconButtonStart);
 		setLaunchedState(false);
-		chen.setEnded();
-		chen.offAll();		
-		chen.setSeq("1-2-3-4");
+		IHM.setEnded();
+		IHM.offAll();		
+		IHM.setSeq("1-2-3-4");
 		chenillardThread.stop();
 		
 
@@ -1147,9 +1143,9 @@ public class chen extends javax.swing.JFrame {
 	}
 	public void startThreadChenillard(){
 		if(getChenState()==false){
-			chen.resetEnded();
+			IHM.resetEnded();
 			bPauseResume.setIcon(iconButtonPause);
-			if (chen.isPaused()==true)setPaused(false);	
+			if (IHM.isPaused()==true)setPaused(false);	
 			chenillardThread=new Thread(new chenillard());
 			chenillardThread.start();
 			setLaunchedState(true);
@@ -1206,25 +1202,7 @@ public class chen extends javax.swing.JFrame {
 		return response;
 	}
 	
-	public boolean readState(String add,String addgp){
 
-		boolean response = false;
-		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
-		sm.setMethod(webservice,"getState","add",add,"addgp",addgp);
-		
-		String rep=sm.getResponse().toString();
-
-		if (rep.equals("1"))response=true;
-
-		try {	sm.post();
-
-		} catch (Exception e){
-			System.out.println(e.getMessage());
-		}
-
-		return response;
-
-	}
 
 	public void ledOn(int nbLamp){
 
@@ -1239,7 +1217,7 @@ public class chen extends javax.swing.JFrame {
 		}
 
 		
-		String addCible=chen.getChosenAdd();
+		String addCible=IHM.getChosenAdd();
 		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 		sm.setMethod(webservice,"writeOn","add",addCible,"lampe",numLamp);
 
@@ -1266,7 +1244,7 @@ public class chen extends javax.swing.JFrame {
 		default: break;
 		}
 
-		String addCible=chen.getChosenAdd();
+		String addCible=IHM.getChosenAdd();
 		System.out.println("add cible :"+addCible);
 		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 		sm.setMethod(webservice,"writeOff","add",addCible,"lampe",numLamp);
@@ -1322,9 +1300,9 @@ public class chen extends javax.swing.JFrame {
 		String namespace="http://wsandroid.projet.rb.esir2/";
 		String address="";
 
-		chen.setPaused(true);
+		IHM.setPaused(true);
 		address=Util.getLocalAdd();	
-		String addCible=chen.getChosenAdd();
+		String addCible=IHM.getChosenAdd();
 		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 		sm.setMethod(webservice,"pauseSequence","add",addCible);
 
@@ -1344,8 +1322,8 @@ public class chen extends javax.swing.JFrame {
 
 	public void resumeSequence(){
 
-		chen.setPaused(false);
-		String addCible=chen.getChosenAdd();
+		IHM.setPaused(false);
+		String addCible=IHM.getChosenAdd();
 		sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 		sm.setMethod(webservice,"resumeSequence","add",addCible);
 

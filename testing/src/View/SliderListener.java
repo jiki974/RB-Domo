@@ -1,3 +1,4 @@
+package View;
 import java.io.IOException;
 
 import javax.swing.JSlider;
@@ -6,31 +7,34 @@ import javax.swing.event.ChangeListener;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import Util.Soapcommunicator;
+import Util.Util;
+
 
 public class SliderListener implements ChangeListener{
 	private Soapcommunicator sm;	
 	private String webservice="wsandroid";
 	private String namespace="http://wsandroid.projet.rb.esir2/";
 	private String address="";
-	private chen cheni;
+	private IHM cheni;
 
-	public SliderListener(chen c){
+	public SliderListener(IHM c){
 		cheni=c;
 	}
 	@Override
 	public void stateChanged(ChangeEvent evt) {
-		String addCible=chen.getChosenAdd();
+		String addCible=IHM.getChosenAdd();
 		
 			address="http://"+Util.getLocal();
 			JSlider source = (JSlider)evt.getSource();
 			int Value  = (int)source.getValue();
 			if (!source.getValueIsAdjusting()||Value!=800) {
 				 Value  = (int)source.getValue();
-				chen.setChosenSpeed(Value);
+				IHM.setChosenSpeed(Value);
 			}
 
-			int speedChosen=chen.getChosenSpeed();		
-			addCible=chen.getChosenAdd();
+			int speedChosen=IHM.getChosenSpeed();		
+			addCible=IHM.getChosenAdd();
 
 			String Speed;
 

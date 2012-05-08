@@ -1,8 +1,12 @@
+package View;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import org.xmlpull.v1.XmlPullParserException;
+
+import Util.Soapcommunicator;
+import Util.Util;
 
 
 public class GetSequence implements ActionListener, Runnable{
@@ -11,25 +15,25 @@ public class GetSequence implements ActionListener, Runnable{
 	private String webservice="wsandroid";
 	private String namespace="http://wsandroid.projet.rb.esir2/";
 	private String address="";
-	private chen cheni;
+	private IHM cheni;
 
-	public GetSequence(chen c){
+	public GetSequence(IHM c){
 		cheni=c;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		String addCible=chen.getChosenAdd();
+		String addCible=IHM.getChosenAdd();
 		//si la techno est valide et si il y a une connection et si la séquence n'est pas en train d'être configurée
-		if(cheni.isConnected(addCible)&&!chen.getSeqSetState()&&chen.getInvalidTechnoState()){
+		if(cheni.isConnected(addCible)&&!IHM.getSeqSetState()&&IHM.getInvalidTechnoState()){
 			cheni.startThreadSetup();
-			chen.setSeqIsSet(true);
-			chen.setEnded();
+			IHM.setSeqIsSet(true);
+			IHM.setEnded();
 			cheni.stopThread();
 			new Thread(this).start();
 			address=Util.getLocalAdd();	
-			addCible=chen.getChosenAdd();
-			chen.setSeq("");
+			addCible=IHM.getChosenAdd();
+			IHM.setSeq("");
 			sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 			sm.setMethod(webservice,"stopSequence","add",addCible);
 			try {
@@ -48,24 +52,24 @@ public class GetSequence implements ActionListener, Runnable{
 	@Override
 	public void run() {
 
-		String techno=chen.getTechno();
+		String techno=IHM.getTechno();
 		seq=new LampList<Integer>();
 		//String sequence=null;
 
-		chen.offAll();
+		IHM.offAll();
 
 		address=Util.getLocalAdd();	
-		String addCible=chen.getChosenAdd();
+		String addCible=IHM.getChosenAdd();
 
 
 
 		while(true){
 
-			if(chen.getNbLampSet()==4){
+			if(IHM.getNbLampSet()==4){
 
-				System.out.println(chen.getNbLampSet());
-				chen.resetNbLampSet();
-				String s = chen.getSequence();
+				System.out.println(IHM.getNbLampSet());
+				IHM.resetNbLampSet();
+				String s = IHM.getSequence();
 				String[] sp=s.split("-");			
 
 				for(int i=0;i<sp.length;i++) {
@@ -77,15 +81,15 @@ public class GetSequence implements ActionListener, Runnable{
 				System.out.println(seq);
 				cheni.stopThreadSetup();			
 				System.out.println(Sequence);
-				chen.setSeq(Sequence);
-				Sequence=chen.getSequence();
+				IHM.setSeq(Sequence);
+				Sequence=IHM.getSequence();
 
 
 				sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 				sm.setMethod(webservice,"stopSequence","add",addCible);
 				sm.setMethod(webservice,"startSequence","add",addCible,"nameseq",Sequence);
-				chen.setSeq(Sequence);		
-				chen.setSeqIsSet(false);
+				IHM.setSeq(Sequence);		
+				IHM.setSeqIsSet(false);
 				cheni.startThreadChenillard();
 
 				try {
@@ -102,14 +106,14 @@ public class GetSequence implements ActionListener, Runnable{
 
 
 				for(int i=1;i<5;i++){
-					chen.setState(i, false);			
+					IHM.setState(i, false);			
 				}
 
 				if(techno.equals("SIMU")){
 					//cheni.startThreadVisuSwing();
-					chen.resetEnded();
-					chen.setPaused(false);
-					System.out.println(chen.getEnd());
+					IHM.resetEnded();
+					IHM.setPaused(false);
+					System.out.println(IHM.getEnd());
 				}	
 				/*for(int x=1;x<5;x++){
 				switch(x){
@@ -129,7 +133,7 @@ public class GetSequence implements ActionListener, Runnable{
 			}
 
 			}*/		
-				else{chen.offAll();}
+				else{IHM.offAll();}
 
 				System.out.println("Sequence="+Sequence);
 
