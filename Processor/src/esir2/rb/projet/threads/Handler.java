@@ -116,7 +116,7 @@ public class Handler implements Runnable {
 		actions.put(addgp, -1);
 		
 			}
-		String ret;
+		String ret="0";
 		
 	
 		ret=comm.getValue(add,addgp);
