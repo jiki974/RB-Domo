@@ -322,10 +322,10 @@ public class Processor implements BundleActivator,Runnable {
 		}
 	}
 	
-	public String getState(String ip, String addgp){
+	public String getState(String ip, String addgp,int nb){
 		
 		Handler handler=handlers.get(ip);
-		return handler.getState(addgp);
+		return handler.getState(addgp,nb);
 	}
 	
 

@@ -14,6 +14,8 @@ public class Sequence implements Runnable {
 	private String sequence;
 	private int speed=800;
 	private String add;
+	
+	
 	private volatile Thread seqThread;
 	private boolean threadSuspended=false;
 

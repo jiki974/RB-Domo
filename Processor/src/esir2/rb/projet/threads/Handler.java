@@ -108,21 +108,28 @@ public class Handler implements Runnable {
 	}
 
   
-	public String getState(String addgp) {
-		if(!actions.containsKey(addgp))
-		{
-			
-		comm.setListener(add,addgp);
-		actions.put(addgp, -1);
+	public String getState(String addgp,int nb) {
 		
-			}
+		for(int i=0;i<nb;i++){
+			
+			if(!actions.containsKey(addgp+i))
+			{
+				
+			comm.setListener(add,addgp+i);
+			actions.put(addgp+i, -1);
+			
+				}
+		}
+	
 		String ret="0";
 		
 	
-		ret=comm.getValue(add,addgp);
+		ret=comm.getValue(add,addgp,nb);	
 		
-	
-		comm.resetListener(add,addgp);
+		for(int i=0;i<nb;i++){
+			comm.resetListener(add,addgp+i);
+		}
+		
 							
 		
 		return ret ;
