@@ -151,13 +151,18 @@ public class Connection {
 		listeners.get(gpadd).reset();	
 	}
 
-	public String getValue(String gpadd) {
+	public String getValue(String gpadd,int nb) {
 		String ret="";
-		String[] temp=gpadd.split("/");
-		int last=Integer.valueOf(temp[temp.length-1]);
-		if(lampsON[last]) ret="1";
+		String value="";
+		for (int i=0;i<=nb;i++){
+		if(lampsON[i]) ret="1";
 		else ret="0";
-		return 	ret;
+		
+		if(i>0)	value+=";"+ret;
+		else value+=ret;
+	
+		}
+		return 	value;
 	}
 
 
