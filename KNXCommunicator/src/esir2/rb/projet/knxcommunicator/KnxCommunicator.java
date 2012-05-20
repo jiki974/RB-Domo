@@ -32,7 +32,7 @@ public class KnxCommunicator  implements Communicator,BundleActivator{
 		Dictionary dict= new Properties();
 		dict.put("type", "KNX");
 		sr = bc.registerService(Communicator.class.getName(), this, dict);	
-		System.out.println("Knx Communicator is available !");
+		System.out.println("gKnx Communicator is available !");
 		
 	}
 
