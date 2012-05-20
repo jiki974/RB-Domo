@@ -3,64 +3,68 @@ package Listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-
-import Util.Soapcommunicator;
-import Util.Util;
+import Components.LampeView;
 import View.IHM;
 
 public class LampesListener implements ActionListener {
 
-	private Soapcommunicator sm;	
-	private String webservice="wsandroid";
-	private String namespace="http://wsandroid.projet.rb.esir2/";
-	private String address = Util.getLocalAdd();	
-	private static ImageIcon iconLedOn = createImageIcon("/images/bulb_yellow.png",	"a pretty but meaningless splat");
-	private JCheckBox c;
+	private LampeView lampe;
+	private IHM myIHM;
+	
+	public LampesListener(IHM i){
+		myIHM=i;
+	}
+	
+	
 	public void actionPerformed(ActionEvent e) {
-
-		c=(JCheckBox) e.getSource(); /** Récupération de la source et casting en checkbox **/
-
-
-		int i=0;
 	
 
-		if (c.equals(IHM.lampe1)){
-			i=1;
+		lampe=(LampeView) e.getSource(); /** Récupération de la source et casting en checkbox **/
+		
+		int i=0;
+		switch (lampe.getId()){
+
+		case(1): i=1;
+		break;
+		case(2): i=2; 
+		break;
+		case(3): i=3;
+		break;
+		case(4): i=4; 
+		break;
 		}
-		else if (c.equals(IHM.lampe2)){
-			i=2;
-		}
-		else if (c.equals(IHM.lampe3)){
-			i=3;
-		}
-		else if (c.equals(IHM.lampe4)){
-			i=4;
+		
+		if(SetupListener.inSetupMode()){
+			System.out.println("lampe "+i);
+
+			String s=String.valueOf(i);
 		}
 
-		String s=String.valueOf(i);
-
-		if (IHM.getSeqSetState()==true&&!IHM.getSetState(i)){
+		
+		
+		
+/*
+		if (IHM_OLD.getSeqSetState()==true&&!IHM_OLD.getSetState(i)){
 			//au niveau de swing
 
-			IHM.setState(i, true);
-			IHM.setNum(s);
+			IHM_OLD.setState(i, true);
+			IHM_OLD.setNum(s);
 			
-			String num=IHM.getNum();
-			IHM.setSequence(num);
-			String seq=IHM.getSequence();
+			String num=IHM_OLD.getNum();
+			IHM_OLD.setSequence(num);
+			String seq=IHM_OLD.getSequence();
 			System.out.println(seq);
-            c.setIcon(iconLedOn);
-			IHM.setNbLampSet();
-			int nb=IHM.getNbLampSet();
+			lampe.turnOn();
+
+			IHM_OLD.setNbLampSet();
+			int nb=IHM_OLD.getNbLampSet();
 
 
 			System.out.println("nb lampe selectionné "+nb);
 
 			//au niveau de knx
 
-			String addCible=IHM.getChosenAdd();
+			String addCible=IHM_OLD.getChosenAdd();
 			sm=new Soapcommunicator(address,9000,namespace); // Création de notre Message
 			sm.setMethod(webservice,"writeOn","add",addCible,"lampe",s);
 
@@ -73,23 +77,11 @@ public class LampesListener implements ActionListener {
 			}
 
 		}	
-
+*/
 
 	}
 
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	protected static ImageIcon createImageIcon(String path, String description) {
-		java.net.URL imgURL = IHM.class.getResource(path);
-		System.out.println(imgURL);
-		if (imgURL != null) {
-			return new ImageIcon(imgURL, description);
-		} else {
-			System.err.println("Couldn't find file: " + path);
-			return null;
-		}
-	}
+
+	
 
 }

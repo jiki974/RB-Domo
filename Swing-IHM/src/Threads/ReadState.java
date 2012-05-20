@@ -5,67 +5,83 @@ import Util.Util;
 import View.IHM;
 
 public class ReadState implements Runnable {
- String add;
- private String webservice="wsandroid";
-	private String namespace="http://wsandroid.projet.rb.esir2/";
-	private String local_address=Util.getLocalAdd();
-	private Soapcommunicator sm=new Soapcommunicator(local_address,9000,namespace); // Création de notre Message
-	
-  public ReadState(String a){
-	 add=a;
-  }
-		public void run() {
-			// TODO Auto-generated method stub
-		
-			System.out.println("hello from retour knx");
 
 
-			while (true){
 
-				boolean ListenerLamp1=read(add,"0/3/0");
-				boolean ListenerLamp2=read(add,"0/3/1");
-				boolean ListenerLamp3=read(add,"0/3/2");
-				boolean ListenerLamp4=read(add,"0/3/3");
+	private String add;
+	private volatile Thread  readStateThread;
 
-				IHM.offAll();
+	private IHM myIHM;
+	private Soapcommunicator mySoap;
 
-				if(ListenerLamp1) IHM.allumeOnly1();
-				if(ListenerLamp2) IHM.allumeOnly2();
-				if(ListenerLamp3) IHM.allumeOnly3();
-				if(ListenerLamp4) IHM.allumeOnly4();
-				//System.out.println("youhouuuu");
-				try {
-					Thread.sleep(500); 
-					//System.out.println("youhou");
-				} catch (Exception e){
-					System.out.println(e.getMessage());
-				}
+	public ReadState(IHM i, Soapcommunicator s,String a){
+		myIHM=i;
+		mySoap=s;
+		add=a;
+	}
+
+
+	public void run() {
+
+		String[] valLamps;
+
+		Thread thisThread= Thread.currentThread();
+
+		readStateThread=Thread.currentThread();
+
+		while (readStateThread==thisThread){
+			valLamps=read(add,"0/3/",3).split(";");
+
+			for(int i=0;i<valLamps.length;i++){
+
+				if(valLamps[i].equals("1")) myIHM.turnOn(i); //Si la l'état de la lampe est égale à "1" on allume la lampe
+				else myIHM.turnOff(i);
+
 			}
 
+			try {
+				thisThread.sleep(Util.REFRESH_THREAD_READ_STATE);
+			} catch (InterruptedException e) {
+				System.err.print("Error during the ReadStateThread sleeping : ");
+				System.err.println(e.getMessage());
+			}
 
 		}
 
-	
 
-
-public boolean read(String add,String addgp){
-
-	boolean response = false;
-	
-	sm.setMethod(webservice,"getState","add",add,"addgp",addgp);
-	
-	String rep=sm.getResponse().toString();
-
-	if (rep.equals("1"))response=true;
-
-	try {	sm.post();
-
-	} catch (Exception e){
-		System.out.println(e.getMessage());
 	}
 
-	return response;
 
-}
+	/** Fonction permettant l'arret de la THREAD **/
+
+	public void killThread(){
+		readStateThread=null;
+	}
+
+
+	/** Fonction appelé afin de lire l'état d'un groupe **/
+
+	public String read(String add,String addgp,int nb){
+
+		String method="getState";
+		mySoap.setMethod(method,"add",add,"addgp",addgp,"nb",String.valueOf(nb));//Indication de l'utilisation de la méthode getState
+
+		String rep = "";// Initialisation de la string de réponse
+
+		try {	
+			mySoap.post();// on essaie de posté 
+			rep=mySoap.getResponse();// et de récupérer l'état
+		} 
+
+		catch (Exception e){
+			System.err.print("Error when posting  "+method+" :");
+			System.out.println(e.getMessage());
+		}
+
+		return rep;
+
+	}
+
+
 
 }
