@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +22,7 @@ import javax.swing.UIManager;
 
 import Components.LampeView;
 import Control.Sequence;
+import Listeners.BthListener;
 import Listeners.ConnectionListener;
 import Listeners.LampesListener;
 import Listeners.SetupListener;
@@ -62,7 +64,7 @@ public class IHM extends JFrame {
 	private JComboBox techSpinner;
 	private JSeparator speedSeparator;
 	private JLabel connectionlabel ;
-
+	private JCheckBox useBth;
 
 
 	private ImageIcon iconButtonAdd = Util.createImageIcon("/images/Add.png","add");
@@ -197,7 +199,7 @@ public class IHM extends JFrame {
 		lblVisualization = new JLabel("Visualisation :");
 		lblVisualization.setForeground(Color.ORANGE);
 		lblVisualization.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblVisualization.setBounds(187, 12, 171, 14);
+		lblVisualization.setBounds(191, 12, 171, 14);
 
 
 		techSpinner = new JComboBox();
@@ -249,6 +251,10 @@ public class IHM extends JFrame {
 		
 		connectionlabel = new JLabel("No connection ");
 		connectionlabel.setBounds(10, 447, 256, 14);
+		
+		useBth = new JCheckBox("Use Bluetooth Indicator");
+		useBth.setFont(new Font("Tahoma", Font.ITALIC, 12));
+		useBth.setBounds(304, 9, 171, 23);
 		}
 
 	/** Fonction permettant l'ajout des composnat a l'IHM **/
@@ -281,6 +287,7 @@ public class IHM extends JFrame {
 		getContentPane().add(bStart);
 		getContentPane().add(sequenceControlLabel);
 		getContentPane().add(connectionlabel);
+		getContentPane().add(useBth);
 	}
 	
 	/** Fonction permettant l'ajout de listener auxx composants **/
@@ -320,7 +327,8 @@ public class IHM extends JFrame {
 	
 	SpeedListener sL=new SpeedListener(this);
 	speedSlider.addChangeListener(sL);
-	
+	BthListener bl=new BthListener(this);
+	useBth.addActionListener(bl);
 	
 	}
 	
