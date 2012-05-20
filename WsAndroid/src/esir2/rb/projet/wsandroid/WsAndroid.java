@@ -17,11 +17,12 @@ public interface WsAndroid {
 	void pauseSequence(@WebParam(name="add") String add );// met en pause une séquence
 	void stopSequence(@WebParam(name="add") String add );// arrete une séquence;
 	boolean isConnected(@WebParam(name="add") String add );// indique si 'lon est connecté à la techno 
-	String getState(@WebParam(name="add") String add,@WebParam(name="addgp") String addgp);
+	String getState(@WebParam(name="add") String add,@WebParam(name="addgp") String addgp,@WebParam(name="nb") int nb);
 	void writeOn(@WebParam(name="add") String add,@WebParam(name="lampe") int lampe);
 	void writeOff(@WebParam(name="add") String add,@WebParam(name="lampe") int lampe);
 	String getConnections();
 	String getSequences();
+	void useBluetoothIndicator (@WebParam(name="add") String add,@WebParam(name="addgp") String addgp,@WebParam(name="nb") int nb);// On utilise le bluetooth indicator avec l'adresse indiqué
 
 
 

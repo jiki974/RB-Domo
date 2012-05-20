@@ -1,8 +1,8 @@
 package esir2.rb.projet.wsandroid;
 
-import javax.jws.HandlerChain;
 import javax.jws.WebService;
 
+import esir2.rb.projet.bluetoothindicator.BluetoothIndicator;
 import esir2.rb.projet.processor.Processor;
 
 @WebService( 
@@ -11,8 +11,11 @@ import esir2.rb.projet.processor.Processor;
 //@HandlerChain(file = "handler-chain.xml") 
 public class WsAndroidImpl implements WsAndroid {	
 	    Processor proc;
-	    public  WsAndroidImpl(Processor p){
+	    BluetoothIndicator bthIndic;
+	    
+	    public  WsAndroidImpl(Processor p,BluetoothIndicator b){
 	    	proc=p;
+	    	bthIndic=b;
 	    }
 		public String sayHello(String name) {
 			return "Hey hey " + name;
@@ -66,9 +69,9 @@ public class WsAndroidImpl implements WsAndroid {
 			return proc.getSequenceSpeed(add);
 		}
 		@Override
-		public String getState(String add, String addgp) {
+		public String getState(String add, String addgp,int nb) {
 			// TODO Auto-generated method stub
-			return proc.getState(add, addgp);
+			return proc.getState(add, addgp,nb);
 		}
 		public void writeOn(String add,int lampe) {
 	    proc.writeOn(add, lampe);
@@ -76,6 +79,10 @@ public class WsAndroidImpl implements WsAndroid {
 	
 		public void writeOff(String add,int lampe) {
 			proc.writeOff(add, lampe);
+		}
+		@Override
+		public void useBluetoothIndicator(String add,String addgp,int nb) {
+			bthIndic.setAdd(add,addgp,nb);
 		}
 
 

@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Processor"/>
 	<classpathentry kind="lib" path="/zLibs/Lib/cxf-2.2.12.jar"/>
 	<classpathentry kind="lib" path="/zLibs/Lib/cxf-dosgi-ri-singlebundle-distribution-1.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BluetoothIndicator"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
