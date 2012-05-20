@@ -7,7 +7,7 @@ import javax.jws.WebService;
 @WebService
 
 public interface WsAndroid {
-	String sayHello( @WebParam(name="name") String name );
+	
 	void connect (@WebParam(name="add") String add ,@WebParam(name="techno") int techno);// entame une connection avec une addresse et une technologie ( knx ou bacnet)
 	void disconnect(@WebParam(name="add") String add );//ferme la connection
 	void startSequence(@WebParam(name="add") String add,@WebParam (name="nameseq") String nameseq);//demarre une séquence
