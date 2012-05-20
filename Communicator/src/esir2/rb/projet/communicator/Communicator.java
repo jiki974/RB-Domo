@@ -16,7 +16,7 @@ public interface Communicator {
 	public void removeListener(String ipadd,String gpadd);
 	public boolean isSource(String ipadd,String gpadd);
 	public boolean isDestination(String ipadd,String gpadd);
-	public String getValue(String ipadd,String gpadd);
+	public String getValue(String ipadd,String gpadd,int nb);
 
 	
 }
