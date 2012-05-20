@@ -32,6 +32,7 @@ public class BluetoothIndicator implements  BundleActivator , Runnable {
 	private StreamConnection streamConnection;
 	private ReadThread r;
 	private WriteThread w;
+	private Boolean bth=true;
 
 	public void start(BundleContext bc) throws Exception {
 		context=bc;
@@ -50,8 +51,13 @@ public class BluetoothIndicator implements  BundleActivator , Runnable {
 		w.killThread();
 	}
 
-	public void connect() throws IOException{
+	public void connect(){
+	try{
 		streamConnection=(StreamConnection)Connector.open(connectionURL);
+	}catch (Exception e) {
+	 bth=false;
+	}
+		
 		}
 
 	
@@ -90,7 +96,7 @@ public class BluetoothIndicator implements  BundleActivator , Runnable {
 					}
 				}
 
-				if(!connectionEstablished){
+				if(!connectionEstablished && bth){
 
 					connect();
 					connectionEstablished=true;
