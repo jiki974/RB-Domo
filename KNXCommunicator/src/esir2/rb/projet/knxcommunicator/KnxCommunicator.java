@@ -141,9 +141,9 @@ public class KnxCommunicator  implements Communicator,BundleActivator{
 
 
 	@Override
-	public String getValue(String ipadd, String gpadd) {
+	public String getValue(String ipadd, String gpadd,int nb) {
 		String res="";
-		if(connections.containsKey(ipadd)) res=connections.get(ipadd).getValue(gpadd);
+		if(connections.containsKey(ipadd)) res=connections.get(ipadd).getValue(gpadd,nb);
 		return res;
 	}
 

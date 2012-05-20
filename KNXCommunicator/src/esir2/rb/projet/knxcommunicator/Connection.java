@@ -38,20 +38,20 @@ public class Connection {
 		if(netLinkIp.isOpen()) {
 			connected=true;
 		}
-		
+
 		try {
 			pc = new ProcessCommunicatorImpl(netLinkIp);
 		} catch (Exception e) {
 			connected=false;
 			System.out.println(e.getClass());
 		}
-		
+
 	}
 
-    public void close(){
-    	netLinkIp.close();
+	public void close(){
+		netLinkIp.close();
 		connected=false;
-    }
+	}
 	public boolean isConnected(){
 		return connected;
 	}
@@ -64,7 +64,7 @@ public class Connection {
 	 * @throws KNXTimeoutException 
 	 */
 	public void writeOn(int address_nb) throws KNXTimeoutException, KNXLinkClosedException, KNXFormatException  {
-	
+
 		pc.write(createGp(address_nb),true);
 	}
 
@@ -91,10 +91,10 @@ public class Connection {
 	 * @param address_nb indique l'adresse de la lampe
 	 * @return l'etat d'une lampe
 	 */
-		public boolean readState(int address_nb) throws KNXFormatException, KNXException{
+	public boolean readState(int address_nb) throws KNXFormatException, KNXException{
 
 		return pc.readBool(createGp(address_nb));
-		}
+	}
 
 
 
@@ -121,8 +121,8 @@ public class Connection {
 		if(listeners.containsKey(gpadd)){	
 			netLinkIp.removeLinkListener(listeners.get(gpadd));
 			listeners.remove(gpadd);
-			}
-			
+		}
+
 
 	}
 
@@ -134,7 +134,7 @@ public class Connection {
 	public boolean  isSource(String gpadd){
 		boolean res=false;
 		if(listeners.containsKey(gpadd)){	
-		res=listeners.get(gpadd).isSource();
+			res=listeners.get(gpadd).isSource();
 		}
 		return res;
 	}
@@ -145,10 +145,10 @@ public class Connection {
 	 * @return un boolean indiquant si l'adresse et une adresse de destination
 	 */
 	public boolean isDestination(String gpadd){
-		
+
 		boolean res=false;
 		if(listeners.containsKey(gpadd)){	
-		res=listeners.get(gpadd).isDestination();}
+			res=listeners.get(gpadd).isDestination();}
 		return res;
 	}	
 
@@ -180,7 +180,7 @@ public class Connection {
 		return new InetSocketAddress(add, 0); //On retourne L'InetSocketAddress
 	}
 
-	
+
 	public GroupAddress createGp(int i) throws KNXFormatException{
 
 		return new GroupAddress(addGp+(i-1));//Retourne une addresse de groupe
@@ -190,14 +190,20 @@ public class Connection {
 		this.addGp=add; 
 	}
 
-	public String getValue(String gpadd) {
+	public String getValue(String gpadd,int nb) {
 		String res="";
-		if(listeners.containsKey(gpadd)){	
-		res=listeners.get(gpadd).getValue();}
-		return res;
-		
-	}
-	
-	
+		String value="";
+		for (int i=0;i<=nb;i++){
+			if(listeners.containsKey(gpadd)){
+
+				String[] temp=gpadd.split("/");
+				res=listeners.get(gpadd).getValue();
+				
+				if(i>0)	value+=";"+res;
+				else value+=res;
+			}
+		}
+
+		return value;}
 
 }
